@@ -1,0 +1,44 @@
+.auth-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.login-btn,
+.logout-btn {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #1ed760;
+  transform: scale(1.05);
+}
+
+.logout-btn {
+  background-color: #ff4444;
+}
+
+.logout-btn:hover {
+  background-color: #ff6666;
+}
+
+.loader {
+  font-size: 1.2rem;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .login-btn,
+  .logout-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
