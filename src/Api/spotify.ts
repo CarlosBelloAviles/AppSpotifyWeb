@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getRedirectUri } from '../config/vercel';
 
 const API_BASE_URL = 'https://api.spotify.com/v1';
 
@@ -7,51 +6,15 @@ export const spotifyApi = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Función para obtener el token de acceso sin PKC
+// Función para obtener el token de acceso usando el backend
 export const getAccessToken = async (code: string) => {
-  const clientId = import.meta.env.VITE_CLIENT_ID;
-  const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
-  const redirectUri = getRedirectUri();
-
-  const response = await axios.post(
-    'https://accounts.spotify.com/api/token',
-    new URLSearchParams({
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: redirectUri,
-      client_id: clientId,
-      client_secret: clientSecret,
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }
-  );
-
+  const response = await axios.post('/api/auth/callback', { code });
   return response.data;
 };
 
-// Función para refrescar el token
+// Función para refrescar el token usando el backend
 export const refreshAccessToken = async (refreshToken: string) => {
-  const clientId = import.meta.env.VITE_CLIENT_ID;
-  const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
-
-  const response = await axios.post(
-    'https://accounts.spotify.com/api/token',
-    new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-      client_id: clientId,
-      client_secret: clientSecret,
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }
-  );
-
+  const response = await axios.post('/api/auth/refresh', { refreshToken });
   return response.data;
 };
 
