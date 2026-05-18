@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getRedirectUri } from '../config/vercel';
 
 const API_BASE_URL = 'https://api.spotify.com/v1';
 
@@ -10,13 +11,14 @@ export const spotifyApi = axios.create({
 export const getAccessToken = async (code: string) => {
   const clientId = import.meta.env.VITE_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
+  const redirectUri = getRedirectUri();
 
   const response = await axios.post(
     'https://accounts.spotify.com/api/token',
     new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: `${window.location.origin}/callback`,
+      redirect_uri: redirectUri,
       client_id: clientId,
       client_secret: clientSecret,
     }),

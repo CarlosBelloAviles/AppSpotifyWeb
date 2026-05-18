@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuth } from './hooks/useAuth';
 import { ArtistList } from './Components/ArtistList';
@@ -41,7 +42,37 @@ const ARTIST_IDS = [
 ];
 
 const AppContent = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login } = useAuth();
+  const callbackHandledRef = useRef(false);
+
+  // Manejar el callback de Spotify
+  useEffect(() => {
+    if (callbackHandledRef.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+
+    if (error) {
+      console.error('Error de Spotify:', error);
+      callbackHandledRef.current = true;
+      return;
+    }
+
+    if (code && !isAuthenticated) {
+      callbackHandledRef.current = true;
+      const handleCallback = async () => {
+        try {
+          await login(code);
+          // Limpiar la URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (err) {
+          console.error('Error al autenticar:', err);
+        }
+      };
+      handleCallback();
+    }
+  }, [isAuthenticated, login]);
 
   return (
     <div className="app">
